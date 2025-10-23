@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -64,7 +65,7 @@ function SubmitButton() {
 export function LessonPlanForm() {
   const router = useRouter();
   const { toast } = useToast();
-  const [state, formAction] = useFormState(createLessonPlan, initialState);
+  const [state, formAction] = useActionState(createLessonPlan, initialState);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
