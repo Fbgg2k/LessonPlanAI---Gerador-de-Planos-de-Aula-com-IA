@@ -100,7 +100,16 @@ export function LessonPlanForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form action={formAction} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(data => {
+              const formData = new FormData();
+              formData.append('gradeLevel', data.gradeLevel);
+              formData.append('subject', data.subject);
+              formData.append('topic', data.topic);
+              formAction(formData);
+            })}
+            className="space-y-8"
+          >
             <div className="grid gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
@@ -111,6 +120,7 @@ export function LessonPlanForm() {
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      name={field.name}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -118,6 +128,7 @@ export function LessonPlanForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
+                        <SelectItem value="Educação Infantil">Educação Infantil</SelectItem>
                         <SelectItem value="Ensino Fundamental I">
                           Ensino Fundamental I
                         </SelectItem>
@@ -136,10 +147,11 @@ export function LessonPlanForm() {
                 name="subject"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Componente Curricular (Matéria)</FormLabel>
-                    <Select
+                    <FormLabel>Matéria</FormLabel>
+                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      name={field.name}
                     >
                       <FormControl>
                         <SelectTrigger>

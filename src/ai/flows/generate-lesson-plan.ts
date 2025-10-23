@@ -44,20 +44,22 @@ const generateLessonPlanPrompt = ai.definePrompt({
   name: 'generateLessonPlanPrompt',
   input: {schema: GenerateLessonPlanInputSchema},
   output: {schema: GenerateLessonPlanOutputSchema},
-  prompt: `You are an AI assistant designed to generate lesson plans for teachers.
+  prompt: `You are an AI assistant specialized in creating lesson plans for Brazilian educators.
 
-  Given the grade level, subject, and topic, create a comprehensive lesson plan that includes:
+  Given the grade level, subject, and topic, generate a complete and structured lesson plan. The plan must include the following four sections:
 
-  - A playful introduction to capture students' attention.
-  - Clearly defined learning objectives aligned with the Base Nacional Comum Curricular (BNCC).
-  - Step-by-step instructions for the activity.
-  - An assessment rubric to evaluate student learning.
+  1.  **Introdução Lúdica:** A creative and engaging introduction to capture students' attention.
+  2.  **Objetivos de Aprendizagem (BNCC):** Clearly defined learning objectives aligned with the Brazilian National Common Curricular Base (BNCC). Be specific and reference the corresponding BNCC codes if possible.
+  3.  **Passo a Passo da Atividade:** Detailed, step-by-step instructions for carrying out the lesson's main activity.
+  4.  **Rubrica de Avaliação:** A clear and concise rubric with criteria to evaluate student learning and performance.
 
-  Grade Level: {{{gradeLevel}}}
-  Subject: {{{subject}}}
-  Topic: {{{topic}}}
+  Use the following inputs to generate the plan:
 
-  Please provide the lesson plan in a structured format.
+  - **Nível de Ensino:** {{{gradeLevel}}}
+  - **Matéria:** {{{subject}}}
+  - **Tema da Aula:** {{{topic}}}
+
+  Please provide a well-formatted and detailed response in Brazilian Portuguese, ensuring all four required sections are present and well-developed.
   `,
 });
 
