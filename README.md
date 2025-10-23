@@ -193,7 +193,7 @@ Após executar o script ou configurar manualmente, a sua aplicação terá as pe
 ### 1. Decisões Técnicas Tomadas
 
 *   **Prompt Engineering:** O prompt para o Gemini foi cuidadosamente estruturado para especificar os quatro componentes obrigatórios do plano de aula. O uso do Genkit com schemas Zod de entrada e saída (`input` e `output`) foi crucial para forçar o modelo a retornar um JSON bem-formado e consistente.
-*   **Uso do Supabase:** Supabase foi utilizado para armazenamento de dados. O RLS (Row Level Security) foi habilitado com políticas públicas para permitir leitura e escrita sem necessidade de autenticação.
+*   **Uso do Supabase sem Autenticação:** A aplicação foi refatorada para funcionar sem a necessidade de login. Para isso, o RLS (Row Level Security) foi habilitado no Supabase com políticas públicas (`using (true)`) para permitir que qualquer visitante possa ler e criar planos de aula, tornando a aplicação uma ferramenta pública e colaborativa.
 *   **Next.js App Router e Server Actions:** A aplicação foi construída com o App Router do Next.js, utilizando Server Components para performance e Server Actions para mutações de dados (criação de planos), o que simplifica o código e melhora a segurança.
 
 ### 2. Desafios Encontrados e Soluções
@@ -202,6 +202,8 @@ Após executar o script ou configurar manualmente, a sua aplicação terá as pe
     *   **Solução:** A utilização do framework Genkit com um `output.schema` definido com Zod resolveu este problema de forma elegante. O Genkit gerencia a comunicação com a API para garantir que a saída corresponda ao schema, fazendo retentativas ou ajustes no prompt se necessário.
 *   **Desafio:** Gerenciamento do estado da aplicação durante o tempo de espera da resposta da IA.
     *   **Solução:** Foi implementado um estado de carregamento (`pending`) utilizando o hook `useFormStatus` do React, que desabilita o botão de submissão e exibe uma mensagem de "Gerando..." enquanto a Server Action está em execução. O feedback de sucesso ou erro é comunicado ao usuário através de toasts.
+*   **Desafio:** Persistência de dados no Supabase sem autenticação.
+    *   **Solução:** O erro "Falha ao salvar no banco de dados" foi resolvido configurando corretamente as políticas de RLS (Row Level Security) no Supabase. Foram criadas políticas explícitas que permitem as operações de `SELECT` e `INSERT` para o role `public`, garantindo que a aplicação possa ler e escrever dados de forma anônima.
 
 -----
 
