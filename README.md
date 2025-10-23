@@ -105,7 +105,7 @@ O banco de dados (Supabase) armazena os planos de aula gerados pela IA.
 
 ### 2. Scripts SQL
 
-Script SQL para criação da tabela `lesson_plans` no Supabase.
+Script SQL para criação da tabela `lesson_plans` no Supabase. **Importante:** Se você já criou a tabela antes, execute este script para garantir que as políticas de segurança (RLS) estejam configuradas para acesso público.
 
 ```sql
 -- Criação da tabela lesson_plans
@@ -118,14 +118,18 @@ CREATE TABLE public.lesson_plans (
   created_at timestamp with time zone default now() not null
 );
 
--- Habilita RLS (Row Level Security) na tabela
+-- Habilita RLS (Row Level Security) na tabela. É importante para definir as políticas.
 alter table public.lesson_plans enable row level security;
 
--- Permite acesso de leitura público a todos os planos
+-- Remove políticas antigas se existirem, para evitar conflitos.
+DROP POLICY IF EXISTS "Allow public read access" ON public.lesson_plans;
+DROP POLICY IF EXISTS "Allow public insert access" ON public.lesson_plans;
+
+-- Permite acesso de leitura (select) a qualquer pessoa, autenticada ou não.
 create policy "Allow public read access" on public.lesson_plans for
 select using (true);
 
--- Permite a inserção pública de novos planos
+-- Permite a inserção (insert) de novos planos por qualquer pessoa, autenticada ou não.
 create policy "Allow public insert access" on public.lesson_plans for
 insert with check (true);
 ```

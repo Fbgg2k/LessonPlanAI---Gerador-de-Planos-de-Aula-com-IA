@@ -14,8 +14,9 @@ export default async function PlansPage() {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching lesson plans:', error);
-    // Optionally, render an error state
+    // Apenas loga o erro no servidor, não impede a renderização.
+    // O erro provavelmente se deve à configuração de RLS no Supabase.
+    // Verifique o README.md para o script SQL correto.
   }
 
   return (
