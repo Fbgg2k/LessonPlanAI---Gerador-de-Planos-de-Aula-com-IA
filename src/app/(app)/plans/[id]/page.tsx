@@ -28,6 +28,7 @@ export default async function PlanDetailPage({ params }: PageProps) {
     .single();
 
   if (error || !lessonPlan) {
+    console.error('Error fetching lesson plan:', error);
     notFound();
   }
 

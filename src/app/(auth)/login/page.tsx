@@ -10,7 +10,17 @@ export default function LoginPage({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      {searchParams?.message && (
+      {searchParams?.message?.includes('Email not confirmed') && (
+         <Alert variant='default'>
+          <Terminal className="h-4 w-4" />
+          <AlertTitle>Confirme seu e-mail</AlertTitle>
+          <AlertDescription>
+            Enviamos um link de confirmação para o seu e-mail. Por favor,
+            verifique sua caixa de entrada.
+          </AlertDescription>
+        </Alert>
+      )}
+      {searchParams?.message && !searchParams?.message?.includes('Email not confirmed') && (
         <Alert variant="destructive">
           <Terminal className="h-4 w-4" />
           <AlertTitle>Erro de Autenticação</AlertTitle>

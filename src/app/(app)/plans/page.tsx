@@ -33,7 +33,7 @@ export default async function PlansPage() {
         <h1 className="font-headline text-3xl font-semibold">
           Meus Planos de Aula
         </h1>
-        <Button asChild style={{ backgroundColor: '#2ECC71', color: 'white' }}>
+        <Button asChild>
           <Link href="/dashboard">
             <PlusCircle className="mr-2 h-4 w-4" />
             Novo Plano
