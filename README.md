@@ -209,6 +209,6 @@ Após executar o script ou configurar manualmente, a sua aplicação terá as pe
 
 ## 🔗 Acessos e Entregáveis
 
-*   **URL da Aplicação:** [URL_DA_APLICACAO_DEPLOYADA]
-*   **Repositório GitHub (Código-fonte):** [LINK_DO_REPOSITORIO]
-*   **Link para o Projeto Supabase:** [LINK_PARA_O_DASHBOARD_SUPABASE]
+*   **URL da Aplicação:** [[URL_DA_APLICACAO_DEPLOYADA](https://github.com/Fbgg2k/LessonPlanAI---Gerador-de-Planos-de-Aula-com-IA.git)]
+*   **Repositório GitHub (Código-fonte):** [[LINK_DO_REPOSITORIO](https://github.com/Fbgg2k/LessonPlanAI---Gerador-de-Planos-de-Aula-com-IA)]
+*   **Link para o Projeto Supabase:** [[LINK_PARA_O_DASHBOARD_SUPABASE](https://hkbqheanmulfkgaxsrce.supabase.co)]
