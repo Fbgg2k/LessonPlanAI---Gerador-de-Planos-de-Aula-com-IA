@@ -99,11 +99,11 @@ Para que a aplicação possa salvar e ler os planos de aula sem exigir login, vo
 
 #### Opção A: Executando o Script SQL (Recomendado)
 
-Copie e execute o script abaixo no **SQL Editor** do seu projeto Supabase. Ele irá criar a tabela (se não existir) e configurar as políticas de segurança corretas.
+Copie e execute o script abaixo **de uma só vez** no **SQL Editor** do seu projeto Supabase. Ele irá criar a tabela (se não existir), limpar políticas antigas e configurar as novas permissões de acesso público corretamente.
 
 ```sql
 -- 1. Cria a tabela (a execução pode falhar se ela já existir, e está tudo bem)
-CREATE TABLE public.lesson_plans (
+CREATE TABLE IF NOT EXISTS public.lesson_plans (
   id uuid primary key default gen_random_uuid(),
   topic text not null,
   grade_level text not null,
@@ -117,6 +117,12 @@ CREATE TABLE public.lesson_plans (
 alter table public.lesson_plans enable row level security;
 
 -- 3. Remove políticas antigas para evitar conflitos.
+-- É seguro executar isso mesmo que as políticas não existam.
+DROP POLICY IF EXISTS "Published visible to all" ON public.lesson_plans;
+DROP POLICY IF EXISTS "Authenticated can select all" ON public.lesson_plans;
+DROP POLICY IF EXISTS "Authenticated can insert" ON public.lesson_plans;
+DROP POLICY IF EXISTS "Authenticated can update" ON public.lesson_plans;
+DROP POLICY IF EXISTS "Only admins can delete" ON public.lesson_plans;
 DROP POLICY IF EXISTS "Allow public read access" ON public.lesson_plans;
 DROP POLICY IF EXISTS "Allow public insert access" ON public.lesson_plans;
 
@@ -131,14 +137,14 @@ insert with check (true);
 
 #### Opção B: Configuração Manual pela Interface do Supabase
 
-Se preferir, siga os passos abaixo:
+Se o script acima falhar ou se preferir o modo manual, siga os passos abaixo:
 
 1.  **Navegue até as Políticas de Autenticação:**
     *   No painel do seu projeto Supabase, vá para `Authentication` -> `Policies`.
 
 2.  **Encontre a Tabela `lesson_plans`:**
     *   Procure pela tabela `lesson_plans`. Se você vir uma mensagem dizendo `RLS is not enabled`, clique no botão **"Enable RLS"**.
-    
+    *   Delete todas as políticas existentes para a tabela `lesson_plans` clicando no ícone de lixeira ao lado de cada uma.
 
 3.  **Crie a Política de Leitura (SELECT):**
     *   Clique em **"New Policy"**.
@@ -147,7 +153,6 @@ Se preferir, siga os passos abaixo:
     *   **Allowed operation:** Marque a opção `SELECT`.
     *   **USING expression:** Digite `true`. Esta é a expressão SQL que permite a leitura.
     *   Clique em **"Review"** e depois em **"Save policy"**.
-    
 
 4.  **Crie a Política de Inserção (INSERT):**
     *   Clique novamente em **"New Policy"**.
@@ -156,7 +161,6 @@ Se preferir, siga os passos abaixo:
     *   **Allowed operation:** Marque a opção `INSERT`.
     *   **WITH CHECK expression:** Digite `true`. Esta é a expressão SQL que permite a inserção.
     *   Clique em **"Review"** e depois em **"Save policy"**.
-    
 
 Após executar o script ou configurar manualmente, a sua aplicação terá as permissões necessárias para funcionar corretamente.
 
