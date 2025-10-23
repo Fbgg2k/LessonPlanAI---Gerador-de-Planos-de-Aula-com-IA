@@ -45,20 +45,17 @@ cd lessonplanai
 
 1.  Crie um novo projeto no Supabase.
 2.  Vá para o `SQL Editor` no painel do seu projeto.
-3.  Execute o **Script SQL** fornecido na seção [Scripts SQL](#2-scripts-sql) para configurar o schema do banco de dados.
+3.  Execute o **Script SQL** fornecido na seção [Scripts SQL e Configuração de Acesso](#-scripts-sql-e-configuração-de-acesso) para configurar o schema do banco de dados e as políticas de segurança.
 4.  Em `Project Settings > API`, obtenha a URL do projeto e a `anon key`.
 
 ### 4. Configuração das Variáveis de Ambiente
 
-Crie um arquivo chamado `.env.local` na raiz do projeto e adicione as seguintes variáveis:
+Crie um arquivo chamado `.env` na raiz do projeto e adicione as seguintes variáveis:
 
 ```
 # Credenciais Supabase (encontradas nas configurações do seu projeto)
 NEXT_PUBLIC_SUPABASE_URL=[SUA_SUPABASE_PROJECT_URL]
 NEXT_PUBLIC_SUPABASE_ANON_KEY=[SUA_SUPABASE_ANON_KEY]
-
-# URL da aplicação para redirects de autenticação
-NEXT_PUBLIC_SITE_URL=http://localhost:9002
 
 # Chave da API do Gemini (obtida no Google AI Studio)
 GEMINI_API_KEY=[SUA_GEMINI_API_KEY]
@@ -80,19 +77,11 @@ O projeto estará acessível em `http://localhost:9002`.
 
 -----
 
-## 🗺️ Modelagem de Dados e Scripts SQL
+## 🗺️ Scripts SQL e Configuração de Acesso
 
 ### 1. Estrutura de Dados
 
 O banco de dados (Supabase) armazena os planos de aula gerados pela IA.
-
-**Inputs definidos para o usuário:**
-
-*   Nível de Ensino (Fundamental I, II, Médio)
-*   Componente Curricular (Matemática, Português, etc.)
-*   Tema/Assunto da Aula
-
-**Diagrama da Estrutura de Dados:**
 
 | Tabela         | Coluna           | Tipo                | Descrição                                         |
 | :------------- | :--------------- | :------------------ | :------------------------------------------------ |
@@ -103,12 +92,17 @@ O banco de dados (Supabase) armazena os planos de aula gerados pela IA.
 |                | `lesson_plan_data` | `jsonb`             | Plano de aula completo gerado pela IA (em JSON) |
 |                | `created_at`     | `timestamp with time zone` | Data de criação (Padrão: `now()`)                 |
 
-### 2. Scripts SQL
 
-Script SQL para criação da tabela `lesson_plans` no Supabase. **Importante:** Se você já criou a tabela antes, execute este script para garantir que as políticas de segurança (RLS) estejam configuradas para acesso público.
+### 2. Configurando o Acesso Público (RLS)
+
+Para que a aplicação possa salvar e ler os planos de aula sem exigir login, você precisa habilitar a **Segurança em Nível de Linha (RLS)** e criar políticas de acesso público no Supabase.
+
+#### Opção A: Executando o Script SQL (Recomendado)
+
+Copie e execute o script abaixo no **SQL Editor** do seu projeto Supabase. Ele irá criar a tabela (se não existir) e configurar as políticas de segurança corretas.
 
 ```sql
--- Criação da tabela lesson_plans (A execução falhará se a tabela já existir, e está tudo bem)
+-- 1. Cria a tabela (a execução pode falhar se ela já existir, e está tudo bem)
 CREATE TABLE public.lesson_plans (
   id uuid primary key default gen_random_uuid(),
   topic text not null,
@@ -118,21 +112,53 @@ CREATE TABLE public.lesson_plans (
   created_at timestamp with time zone default now() not null
 );
 
--- Habilita RLS (Row Level Security) na tabela. É importante para definir as políticas.
+-- 2. Habilita a Segurança em Nível de Linha (RLS) na tabela.
+-- Este passo é CRUCIAL para que as políticas funcionem.
 alter table public.lesson_plans enable row level security;
 
--- Remove políticas antigas se existirem, para evitar conflitos.
+-- 3. Remove políticas antigas para evitar conflitos.
 DROP POLICY IF EXISTS "Allow public read access" ON public.lesson_plans;
 DROP POLICY IF EXISTS "Allow public insert access" ON public.lesson_plans;
 
--- Permite acesso de leitura (select) a qualquer pessoa, autenticada ou não.
+-- 4. Cria a política que permite que QUALQUER um leia (SELECT) os dados da tabela.
 create policy "Allow public read access" on public.lesson_plans for
 select using (true);
 
--- Permite a inserção (insert) de novos planos por qualquer pessoa, autenticada ou não.
+-- 5. Cria a política que permite que QUALQUER um insira (INSERT) novos dados na tabela.
 create policy "Allow public insert access" on public.lesson_plans for
 insert with check (true);
 ```
+
+#### Opção B: Configuração Manual pela Interface do Supabase
+
+Se preferir, siga os passos abaixo:
+
+1.  **Navegue até as Políticas de Autenticação:**
+    *   No painel do seu projeto Supabase, vá para `Authentication` -> `Policies`.
+
+2.  **Encontre a Tabela `lesson_plans`:**
+    *   Procure pela tabela `lesson_plans`. Se você vir uma mensagem dizendo `RLS is not enabled`, clique no botão **"Enable RLS"**.
+    
+
+3.  **Crie a Política de Leitura (SELECT):**
+    *   Clique em **"New Policy"**.
+    *   Selecione **"Create a new policy from scratch"**.
+    *   **Policy name:** `Allow public read access`
+    *   **Allowed operation:** Marque a opção `SELECT`.
+    *   **USING expression:** Digite `true`.
+    *   Clique em **"Review"** e depois em **"Save policy"**.
+    
+
+4.  **Crie a Política de Inserção (INSERT):**
+    *   Clique novamente em **"New Policy"**.
+    *   Selecione **"Create a new policy from scratch"**.
+    *   **Policy name:** `Allow public insert access`
+    *   **Allowed operation:** Marque a opção `INSERT`.
+    *   **WITH CHECK expression:** Digite `true`.
+    *   Clique em **"Review"** e depois em **"Save policy"**.
+    
+
+Após executar o script ou configurar manualmente, a sua aplicação terá as permissões necessárias para funcionar corretamente.
 
 -----
 
@@ -180,6 +206,3 @@ insert with check (true);
 *   **URL da Aplicação:** [URL_DA_APLICACAO_DEPLOYADA]
 *   **Repositório GitHub (Código-fonte):** [LINK_DO_REPOSITORIO]
 *   **Link para o Projeto Supabase:** [LINK_PARA_O_DASHBOARD_SUPABASE]
-
-
-    
