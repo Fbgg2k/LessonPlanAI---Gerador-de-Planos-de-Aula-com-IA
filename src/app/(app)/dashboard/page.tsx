@@ -9,7 +9,7 @@ export default function DashboardPage() {
         </h1>
         <p className="text-muted-foreground">
           Preencha os campos abaixo para criar um plano de aula personalizado
-          para sua turma, com a ajuda da IA.
+          com a ajuda da IA.
         </p>
       </div>
       <LessonPlanForm />

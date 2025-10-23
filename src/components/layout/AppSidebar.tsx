@@ -4,14 +4,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Bot, FileText, BookCopy } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
 
 export function AppSidebar() {
   const pathname = usePathname();
 
   const navItems = [
     { href: '/dashboard', icon: Bot, label: 'Gerador IA' },
-    { href: '/plans', icon: FileText, label: 'Meus Planos' },
+    { href: '/plans', icon: FileText, label: 'Planos Gerados' },
   ];
 
   return (

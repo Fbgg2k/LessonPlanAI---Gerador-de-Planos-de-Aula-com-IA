@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
 import { LessonPlanList } from '@/components/plans/LessonPlanList';
 import type { LessonPlan } from '@/lib/types';
 import Link from 'next/link';
@@ -8,18 +7,10 @@ import { PlusCircle } from 'lucide-react';
 
 export default async function PlansPage() {
   const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect('/login');
-  }
 
   const { data: lessonPlans, error } = await supabase
     .from('lesson_plans')
     .select('*')
-    .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -31,7 +22,7 @@ export default async function PlansPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="font-headline text-3xl font-semibold">
-          Meus Planos de Aula
+          Planos de Aula Gerados
         </h1>
         <Button asChild>
           <Link href="/dashboard">

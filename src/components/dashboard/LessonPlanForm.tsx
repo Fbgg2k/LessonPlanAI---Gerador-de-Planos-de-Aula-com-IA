@@ -30,10 +30,11 @@ import { Wand2 } from 'lucide-react';
 import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { Textarea } from '../ui/textarea';
 
 const formSchema = z.object({
   gradeLevel: z.string().min(1, 'Nível de ensino é obrigatório.'),
-  subject: z.string().min(1, 'Matéria é obrigatória.'),
+  subject: z.string().min(1, 'Assunto é obrigatório.'),
   topic: z.string().min(3, 'O tópico deve ter pelo menos 3 caracteres.'),
 });
 
@@ -141,29 +142,10 @@ export function LessonPlanForm() {
                 name="subject"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Matéria</FormLabel>
-                     <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      name={field.name}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione a matéria" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Português">Português</SelectItem>
-                        <SelectItem value="Matemática">Matemática</SelectItem>
-                        <SelectItem value="Ciências">Ciências</SelectItem>
-                        <SelectItem value="História">História</SelectItem>
-                        <SelectItem value="Geografia">Geografia</SelectItem>
-                        <SelectItem value="Artes">Artes</SelectItem>
-                        <SelectItem value="Educação Física">
-                          Educação Física
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Assunto</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex: Biologia" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -174,9 +156,9 @@ export function LessonPlanForm() {
               name="topic"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tema/Assunto da Aula</FormLabel>
+                  <FormLabel>Tema da Aula</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: O ciclo da água" {...field} />
+                    <Textarea placeholder="Descreva em detalhes o tema que você quer para a sua aula. Por exemplo: 'Uma aula sobre o ciclo da água, explicando a evaporação, condensação e precipitação para crianças do 3º ano.'" {...field} />
                   </FormControl>
                   <FormDescription>
                     Seja específico sobre o que você quer ensinar.

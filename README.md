@@ -18,7 +18,7 @@ O plano de aula gerado inclui os seguintes componentes:
 O projeto foi desenvolvido utilizando a seguinte stack:
 
 *   **Frontend:** Next.js (React) com TypeScript e Tailwind CSS.
-*   **Backend:** Supabase (Banco de dados e autenticação).
+*   **Backend:** Supabase (Banco de dados).
 *   **IA:** Google AI Studio / Gemini API (através de Genkit).
 *   **UI Components:** ShadCN/UI.
 
@@ -47,7 +47,6 @@ cd lessonplanai
 2.  Vá para o `SQL Editor` no painel do seu projeto.
 3.  Execute o **Script SQL** fornecido na seção [Scripts SQL](#2-scripts-sql) para configurar o schema do banco de dados.
 4.  Em `Project Settings > API`, obtenha a URL do projeto e a `anon key`.
-5.  Em `Authentication > Providers`, habilite o provedor de Email. Para este projeto de teste, recomenda-se desabilitar a opção "Confirm email" para um fluxo de cadastro mais rápido.
 
 ### 4. Configuração das Variáveis de Ambiente
 
@@ -85,7 +84,7 @@ O projeto estará acessível em `http://localhost:9002`.
 
 ### 1. Estrutura de Dados
 
-O banco de dados (Supabase) armazena os planos de aula gerados pela IA, associados a cada usuário.
+O banco de dados (Supabase) armazena os planos de aula gerados pela IA.
 
 **Inputs definidos para o usuário:**
 
@@ -98,7 +97,6 @@ O banco de dados (Supabase) armazena os planos de aula gerados pela IA, associad
 | Tabela         | Coluna           | Tipo                | Descrição                                         |
 | :------------- | :--------------- | :------------------ | :------------------------------------------------ |
 | `lesson_plans` | `id`             | `uuid`              | Chave primária (Gerada automaticamente)             |
-|                | `user_id`        | `uuid`              | Chave estrangeira para `auth.users(id)`             |
 |                | `topic`          | `text`              | Tema fornecido pelo usuário                       |
 |                | `grade_level`    | `text`              | Nível de ensino fornecido pelo usuário            |
 |                | `subject`        | `text`              | Matéria fornecida pelo usuário                    |
@@ -107,13 +105,12 @@ O banco de dados (Supabase) armazena os planos de aula gerados pela IA, associad
 
 ### 2. Scripts SQL
 
-Script SQL para criação da tabela `lesson_plans` no Supabase e configuração de políticas de segurança (RLS).
+Script SQL para criação da tabela `lesson_plans` no Supabase.
 
 ```sql
 -- Criação da tabela lesson_plans
 CREATE TABLE public.lesson_plans (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid references auth.users(id) on delete cascade not null,
   topic text not null,
   grade_level text not null,
   subject text not null,
@@ -122,27 +119,15 @@ CREATE TABLE public.lesson_plans (
 );
 
 -- Habilita RLS (Row Level Security) na tabela
-ALTER TABLE public.lesson_plans ENABLE ROW LEVEL SECURITY;
+alter table public.lesson_plans enable row level security;
 
--- Política: Usuários podem visualizar apenas seus próprios planos de aula.
-CREATE POLICY "Users can view their own lesson plans"
-  ON public.lesson_plans FOR SELECT
-  USING (auth.uid() = user_id);
+-- Permite acesso de leitura público a todos os planos
+create policy "Allow public read access" on public.lesson_plans for
+select using (true);
 
--- Política: Usuários podem criar planos de aula para si mesmos.
-CREATE POLICY "Users can insert their own lesson plans"
-  ON public.lesson_plans FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
-
--- Política: Usuários podem atualizar seus próprios planos de aula.
-CREATE POLICY "Users can update their own lesson plans"
-  ON public.lesson_plans FOR UPDATE
-  USING (auth.uid() = user_id);
-
--- Política: Usuários podem deletar seus próprios planos de aula.
-CREATE POLICY "Users can delete their own lesson plans"
-  ON public.lesson_plans FOR DELETE
-  USING (auth.uid() = user_id);
+-- Permite a inserção pública de novos planos
+create policy "Allow public insert access" on public.lesson_plans for
+insert with check (true);
 ```
 
 -----
@@ -158,7 +143,6 @@ CREATE POLICY "Users can delete their own lesson plans"
 
 ### 2. Requisitos Funcionais Implementados
 
-*   **Autenticação de Usuários:** Integração com Supabase Auth para login e cadastro.
 *   **Formulário para Entrada de Dados:** Interface intuitiva para o usuário fornecer os parâmetros do plano de aula.
 *   **Validação dos Inputs:** Validação no frontend e backend para garantir que os dados inseridos são válidos.
 *   **Integração com Gemini API:** Envio de requisição à API do Gemini com um *prompt* estruturado através do Genkit.
@@ -175,8 +159,8 @@ CREATE POLICY "Users can delete their own lesson plans"
 ### 1. Decisões Técnicas Tomadas
 
 *   **Prompt Engineering:** O prompt para o Gemini foi cuidadosamente estruturado para especificar os quatro componentes obrigatórios do plano de aula. O uso do Genkit com schemas Zod de entrada e saída (`input` e `output`) foi crucial para forçar o modelo a retornar um JSON bem-formado e consistente.
-*   **Uso do Supabase:** Supabase foi utilizado para autenticação e armazenamento de dados. O RLS (Row Level Security) foi habilitado para garantir que os usuários só possam acessar e manipular seus próprios dados, proporcionando uma arquitetura multi-tenant segura.
-*   **Next.js App Router e Server Actions:** A aplicação foi construída com o App Router do Next.js, utilizando Server Components para performance e Server Actions para mutações de dados (login, signup, criação de planos), o que simplifica o código e melhora a segurança.
+*   **Uso do Supabase:** Supabase foi utilizado para armazenamento de dados. O RLS (Row Level Security) foi habilitado com políticas públicas para permitir leitura e escrita sem necessidade de autenticação.
+*   **Next.js App Router e Server Actions:** A aplicação foi construída com o App Router do Next.js, utilizando Server Components para performance e Server Actions para mutações de dados (criação de planos), o que simplifica o código e melhora a segurança.
 
 ### 2. Desafios Encontrados e Soluções
 
@@ -191,5 +175,4 @@ CREATE POLICY "Users can delete their own lesson plans"
 
 *   **URL da Aplicação:** [URL_DA_APLICACAO_DEPLOYADA]
 *   **Repositório GitHub (Código-fonte):** [LINK_DO_REPOSITORIO]
-*   **Credenciais de Teste:** E-mail: `test@example.com`, Senha: `password`
 *   **Link para o Projeto Supabase:** [LINK_PARA_O_DASHBOARD_SUPABASE]

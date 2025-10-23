@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 
 const formSchema = z.object({
   gradeLevel: z.string().min(1, 'Nível de ensino é obrigatório.'),
-  subject: z.string().min(1, 'Matéria é obrigatória.'),
+  subject: z.string().min(1, 'Assunto é obrigatório.'),
   topic: z.string().min(3, 'O tópico deve ter pelo menos 3 caracteres.'),
 });
 
@@ -17,15 +17,6 @@ type State = {
 };
 
 export async function createLessonPlan(prevState: State, formData: FormData) : Promise<State> {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { message: 'Usuário não autenticado.' };
-  }
-
   const validatedFields = formSchema.safeParse({
     gradeLevel: formData.get('gradeLevel'),
     subject: formData.get('subject'),
@@ -48,10 +39,10 @@ export async function createLessonPlan(prevState: State, formData: FormData) : P
       return { message: 'A IA não conseguiu gerar o plano de aula.' };
     }
 
+    const supabase = createClient();
     const { data, error } = await supabase
       .from('lesson_plans')
       .insert({
-        user_id: user.id,
         topic: topic,
         grade_level: gradeLevel,
         subject: subject,

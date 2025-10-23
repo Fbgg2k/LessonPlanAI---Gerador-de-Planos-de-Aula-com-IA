@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { LessonPlanDisplay } from '@/components/plans/LessonPlanDisplay';
 import type { LessonPlan } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -12,19 +12,11 @@ type PageProps = {
 
 export default async function PlanDetailPage({ params }: PageProps) {
   const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect('/login');
-  }
 
   const { data: lessonPlan, error } = await supabase
     .from('lesson_plans')
     .select('*')
     .eq('id', params.id)
-    .eq('user_id', user.id)
     .single();
 
   if (error || !lessonPlan) {

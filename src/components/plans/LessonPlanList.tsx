@@ -16,13 +16,13 @@ import { ptBR } from 'date-fns/locale';
 export function LessonPlanList({ lessonPlans }: { lessonPlans: LessonPlan[] }) {
   if (lessonPlans.length === 0) {
     return (
-      <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed bg-card shadow-sm py-20">
+      <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed bg-card py-20 shadow-sm">
         <div className="flex flex-col items-center gap-2 text-center">
           <h3 className="font-headline text-2xl font-bold tracking-tight">
-            Você ainda não tem planos de aula.
+            Ainda não há planos de aula.
           </h3>
           <p className="text-sm text-muted-foreground">
-            Comece a gerar seu primeiro plano de aula agora mesmo.
+            Que tal gerar o primeiro plano de aula agora mesmo?
           </p>
           <Button asChild className="mt-4" style={{ backgroundColor: '#2ECC71', color: 'white' }}>
             <Link href="/dashboard">Gerar Plano de Aula</Link>
