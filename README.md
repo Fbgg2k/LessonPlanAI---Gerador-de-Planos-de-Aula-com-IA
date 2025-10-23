@@ -206,4 +206,3 @@ Após executar o script ou configurar manualmente, a sua aplicação terá as pe
 *   **URL da Aplicação:** [URL_DA_APLICACAO_DEPLOYADA]
 *   **Repositório GitHub (Código-fonte):** [LINK_DO_REPOSITORIO]
 *   **Link para o Projeto Supabase:** [LINK_PARA_O_DASHBOARD_SUPABASE]
-
