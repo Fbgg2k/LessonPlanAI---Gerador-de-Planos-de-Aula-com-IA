@@ -108,7 +108,7 @@ O banco de dados (Supabase) armazena os planos de aula gerados pela IA.
 Script SQL para criação da tabela `lesson_plans` no Supabase. **Importante:** Se você já criou a tabela antes, execute este script para garantir que as políticas de segurança (RLS) estejam configuradas para acesso público.
 
 ```sql
--- Criação da tabela lesson_plans
+-- Criação da tabela lesson_plans (A execução falhará se a tabela já existir, e está tudo bem)
 CREATE TABLE public.lesson_plans (
   id uuid primary key default gen_random_uuid(),
   topic text not null,
@@ -180,3 +180,6 @@ insert with check (true);
 *   **URL da Aplicação:** [URL_DA_APLICACAO_DEPLOYADA]
 *   **Repositório GitHub (Código-fonte):** [LINK_DO_REPOSITORIO]
 *   **Link para o Projeto Supabase:** [LINK_PARA_O_DASHBOARD_SUPABASE]
+
+
+    
