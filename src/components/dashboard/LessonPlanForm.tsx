@@ -101,13 +101,7 @@ export function LessonPlanForm() {
       <CardContent>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(data => {
-              const formData = new FormData();
-              formData.append('gradeLevel', data.gradeLevel);
-              formData.append('subject', data.subject);
-              formData.append('topic', data.topic);
-              formAction(formData);
-            })}
+            action={formAction}
             className="space-y-8"
           >
             <div className="grid gap-6 md:grid-cols-2">
