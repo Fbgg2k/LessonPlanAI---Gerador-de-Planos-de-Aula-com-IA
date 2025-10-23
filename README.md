@@ -145,7 +145,7 @@ Se preferir, siga os passos abaixo:
     *   Selecione **"Create a new policy from scratch"**.
     *   **Policy name:** `Allow public read access`
     *   **Allowed operation:** Marque a opção `SELECT`.
-    *   **USING expression:** Digite `true`.
+    *   **USING expression:** Digite `true`. Esta é a expressão SQL que permite a leitura.
     *   Clique em **"Review"** e depois em **"Save policy"**.
     
 
@@ -154,7 +154,7 @@ Se preferir, siga os passos abaixo:
     *   Selecione **"Create a new policy from scratch"**.
     *   **Policy name:** `Allow public insert access`
     *   **Allowed operation:** Marque a opção `INSERT`.
-    *   **WITH CHECK expression:** Digite `true`.
+    *   **WITH CHECK expression:** Digite `true`. Esta é a expressão SQL que permite a inserção.
     *   Clique em **"Review"** e depois em **"Save policy"**.
     
 
@@ -206,3 +206,4 @@ Após executar o script ou configurar manualmente, a sua aplicação terá as pe
 *   **URL da Aplicação:** [URL_DA_APLICACAO_DEPLOYADA]
 *   **Repositório GitHub (Código-fonte):** [LINK_DO_REPOSITORIO]
 *   **Link para o Projeto Supabase:** [LINK_PARA_O_DASHBOARD_SUPABASE]
+
